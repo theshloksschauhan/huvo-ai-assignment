@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Northstar Homes — Ria</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="app">
+
+  <div class="skyline-wrap">
+    <svg viewBox="0 0 900 64" preserveAspectRatio="none">
+      <polyline points="0,64 0,40 30,40 30,50 60,50 60,20 90,20 90,45 130,45 130,10 135,10 135,45 170,45 170,30 210,30 210,48 240,48 240,15 245,15 245,48 280,48 280,35 320,35 320,5 325,5 325,35 360,35 360,25 400,25 400,50 440,50 440,18 480,18 480,42 520,42 520,8 525,8 525,42 560,42 560,30 600,30 600,45 640,45 640,12 645,12 645,45 680,45 680,25 720,25 720,38 760,38 760,15 800,15 800,44 840,44 840,20 900,20 900,64"
+        fill="none" stroke="#3a4552" stroke-width="1"/>
+      <circle class="window-light" cx="642" cy="25" r="2.2" fill="#B8935A"/>
+    </svg>
+    <div class="brand">
+      Northstar Homes <span class="dot">·</span> Ria
+    </div>
+  </div>
+
+  <div class="spec">
+    <div class="eyebrow">Property Dossier</div>
+    <h1>Northstar One</h1>
+    <div class="loc">Sector 79, Gurugram</div>
+
+    <div class="spec-row">
+      <div class="k">Configurations</div>
+      <div class="v">2 BHK &nbsp;·&nbsp; 3 BHK</div>
+    </div>
+    <div class="spec-row">
+      <div class="k">Starting price — 2 BHK</div>
+      <div class="v"><b>₹1.35 Cr</b> onwards</div>
+    </div>
+    <div class="spec-row">
+      <div class="k">Starting price — 3 BHK</div>
+      <div class="v"><b>₹1.75 Cr</b> onwards</div>
+    </div>
+    <div class="spec-row">
+      <div class="k">Agent</div>
+      <div class="v">Ria · AI Sales Assistant</div>
+    </div>
+
+    <div class="status-pill"><span class="dot"></span> Session active</div>
+  </div>
+
+  <div class="convo-col">
+    <div class="thread" id="thread">
+      <div class="row">
+        <div class="ria-mark">
+          <svg viewBox="0 0 26 26"><circle class="ring" cx="13" cy="13" r="10.5"/><line class="tick" x1="13" y1="3.5" x2="13" y2="5.5"/><line class="tick" x1="13" y1="20.5" x2="13" y2="22.5"/><line class="tick" x1="3.5" y1="13" x2="5.5" y2="13"/><line class="tick" x1="20.5" y1="13" x2="22.5" y2="13"/><line class="needle" x1="13" y1="13" x2="13" y2="5"/><circle class="core" cx="13" cy="13" r="1.6"/></svg>
+        </div>
+        <div class="msg agent">Hi! Main Ria bol rahi hoon, Northstar Homes se. Aapko Project Northstar One mein interest tha — kya main aapki requirements samajh sakti hoon?</div>
+      </div>
+    </div>
+
+    <div class="composer">
+      <input type="text" id="user-input" placeholder="Type in English, Hindi, or Hinglish…" autocomplete="off" />
+      <button id="send-btn">Send</button>
+      <button class="end" id="end-btn">End</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- Reusing old modal for analytics -->
+<div id="analytics-modal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn">&times;</span>
+        <h2>Conversation Analytics</h2>
+        <pre id="analytics-data">Loading...</pre>
+    </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
