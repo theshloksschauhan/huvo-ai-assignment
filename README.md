@@ -1,52 +1,137 @@
-# Northstar Homes AI Conversational Bot
+<div align="center">
+  
+# 🏙️ Project Northstar One — AI Sales Concierge
 
-This repository contains the solution for the Huvo AI Forward Deployed Engineer Assignment.
+**Forward Deployed Engineer Assignment for Huvo AI**
 
-## Overview
-A conversational AI bot for a fictional real-estate company, **Northstar Homes**. The bot is built using Node.js, Express, and vanilla HTML/CSS/JS. It interacts with users, handles real-estate inquiries about "Project Northstar One", manages objections, and handles site-visit bookings using the OpenAI API.
+[![Node.js](https://img.shields.io/badge/Node.js-18.x-green.svg)](https://nodejs.org/)
+[![OpenAI](https://img.shields.io/badge/OpenAI-gpt--4o--mini-blue)](https://openai.com/)
+[![Express](https://img.shields.io/badge/Express-4.x-lightgrey)](https://expressjs.com/)
 
-## Project Structure
-- `server.js`: The Express server routing chat and analytics endpoints with fail-fast initialization.
-- `src/facts.js`: Single source of truth for project prices and details (prevents hallucination).
-- `src/promptBuilder.js`: Generates the strict System Prompt interpolated from the project facts.
-- `src/chat.js`: Handles OpenAI API interaction, state management, and function calling.
-- `src/booking.js`: Deterministic booking simulator (bookings requested on a "Monday" deliberately fail for reproducible testing).
-- `src/analytics.js`: Extraction-only LLM call to strictly parse conversation history into JSON at the end of a session.
-- `public/`: Contains the frontend assets (`index.html`, `style.css`, `script.js`), designed as a premium property dossier.
-- `test_cases.md`: Details various conversation scenarios, edge cases, and expected behaviors.
+A highly deterministic, zero-hallucination conversational AI bot built to act as a premium real estate sales concierge. 
 
-## How to Run
+[Features](#-key-features) • [Architecture](#-system-architecture) • [Getting Started](#-getting-started) • [Testing](#-testing--deterministic-failures)
 
-1. **Clone the repository.**
-2. **Install dependencies:**
-   ```bash
-   npm install
-   ```
-3. **Configure Environment Variables:**
-   - Copy `.env.example` to `.env`:
-     ```bash
-     cp .env.example .env
-     ```
-   - Add your OpenAI API Key to the `.env` file:
-     ```env
-     OPENAI_API_KEY=your_openai_api_key_here
-     ```
-4. **Start the server:**
-   ```bash
-   node server.js
-   ```
-5. **Open the App:**
-   - Navigate to `http://localhost:3000` in your web browser.
+</div>
 
-## Key Assumptions
-- **AI Model:** Uses `gpt-4o-mini` via the OpenAI API for cost-effectiveness and speed.
-- **Language Handling:** No backend translation layer is used; the OpenAI model natively handles English, Hindi, and Hinglish dynamically via prompt instruction.
-- **Booking Simulation:** The `simulateBooking` function uses a deterministic blackout day ("Monday") to demonstrate failure handling reliably during testing.
-- **Analytics Generation:** To extract analytics, the backend makes a separate, temperature-0 LLM call with a forced JSON schema when the session ends.
+---
 
-## Known Limitations
-- The conversation history is stored purely in-memory. Sessions will vanish if the server restarts. This is an intentional trade-off to keep the architecture simple.
-- The bot relies heavily on OpenAI. Any API outages or latency issues directly impact the bot's responsiveness (handled gracefully via timeout fallbacks).
+## ✨ Key Features
 
-## AI Tools Used
-- Developed with the assistance of Google Gemini / Antigravity Agent for scaffolding the codebase and structuring the logic efficiently.
+| Feature | Description |
+| :--- | :--- |
+| **Zero-Hallucination Guardrails** | Interpolates a single `facts.js` source-of-truth into the system prompt. Prices and specs can never drift. |
+| **Native Multi-lingual** | Handles English, Hindi, and Hinglish natively via LLM reasoning without fragile backend translation layers. |
+| **Deterministic Tool Calling** | Site visit bookings execute an actual tool call, passing through a custom deterministic simulator. |
+| **Strict Data Extraction** | Generates session analytics via a secondary, temperature-0 LLM call enforcing strict JSON schemas. |
+| **Premium Aesthetic** | Full-bleed, CSS-grid driven frontend designed as an architect's property dossier, complete with native typing animations. |
+
+---
+
+## 🧠 System Architecture
+
+The backend is deliberately modular. All natural language intelligence lives in the prompt, while the backend acts as a strict orchestrator managing state, API boundaries, and deterministic side-effects.
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant Express as Node/Express Backend
+    participant LLM as OpenAI (gpt-4o-mini)
+    participant Booking as Booking Simulator
+
+    %% Chat Flow
+    rect rgb(25, 30, 36)
+    User->>Express: POST /api/chat { message, sessionId }
+    Express->>LLM: Append history + inject facts.js + tool schemas
+    
+    alt Model invokes book_site_visit
+        LLM-->>Express: tool_use: book_site_visit(date, time)
+        Express->>Booking: simulateBooking(date, time)
+        Booking-->>Express: result (success/fail)
+        Express->>LLM: submit tool_result
+        LLM-->>Express: natural language confirmation/apology
+    else Regular Message
+        LLM-->>Express: Assistant reply
+    end
+    Express-->>User: Render reply & custom UI cards
+    end
+
+    %% End Session Flow
+    rect rgb(30, 25, 36)
+    User->>Express: Click "End" -> POST /api/end
+    Express->>LLM: Send history + strict JSON schema (Temp: 0)
+    LLM-->>Express: Structured Analytics Object
+    Express-->>User: Render Dossier Overlay
+    end
+```
+
+---
+
+## 📂 Project Structure
+
+```text
+huvo-ai-assignment/
+├── .env.example          # Environment variables template
+├── server.js             # Express server with fail-fast initialization
+├── src/                  # Core Business Logic
+│   ├── facts.js          # Single source of truth for project details
+│   ├── promptBuilder.js  # Interpolates facts.js into the System Prompt
+│   ├── chat.js           # Conversation loop & OpenAI Tool Calling
+│   ├── booking.js        # Deterministic booking simulator
+│   └── analytics.js      # Temp-0 Extraction LLM call 
+├── public/               # Frontend Assets
+│   ├── index.html        # Premium showroom UI layout
+│   ├── style.css         # Blueprint / dossier aesthetic 
+│   └── script.js         # Fetch logic and dynamic UI animations
+└── test_cases.md         # Documented test scenarios & actual outputs
+```
+
+---
+
+## 🚀 Getting Started
+
+### 1. Prerequisites
+- Node.js (v18+)
+- An OpenAI API Key
+
+### 2. Installation
+Clone the repository and install dependencies:
+```bash
+git clone https://github.com/theshloksschauhan/huvo-ai-assignment.git
+cd huvo-ai-assignment
+npm install
+```
+
+### 3. Environment Setup
+Copy the example environment file and insert your OpenAI API key:
+```bash
+cp .env.example .env
+```
+
+### 4. Run the Server
+```bash
+node server.js
+```
+Navigate to `http://localhost:3000` to start chatting with Ria.
+
+---
+
+## 🧪 Testing & Deterministic Failures
+
+This bot is designed to be highly testable without relying on randomized outcomes for tool calls. 
+
+### Triggering a Failed Booking
+The `book_site_visit` tool passes through `src/booking.js`. This simulator uses a **deterministic blackout rule**: any booking requested for a **Monday** will explicitly fail.
+
+**Try it:**
+1. Express interest in a 3 BHK.
+2. When prompted for a site visit, reply: *"Let's book it for next Monday at 2 PM."*
+3. Watch the agent cleanly handle the failure state and attempt to reschedule you without hallucinating.
+
+### Session Analytics
+When you are done testing, click the **End** button next to the chat composer. This terminates the session, runs the extraction prompt over your transcript, and outputs the structured qualification data as a JSON dossier directly in the UI.
+
+---
+<div align="center">
+  <i>Built for the Huvo AI Forward Deployed Engineer Assignment.</i>
+</div>
